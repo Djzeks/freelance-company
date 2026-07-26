@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Distortion Entertainment</title>
+  <style>
+    :root{
+      --bg1:#0b1220;
+      --bg2:#0e1a33;
+      --text:#eaf0ff;
+      --muted: rgba(234,240,255,.75);
+      --accent:#2dd4ff;
+      --accent2:#a78bfa;
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      overflow-x:hidden;
+      position: relative;
+    }
+    body::before {
+      content:"";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(45,212,255,.20), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(167,139,250,.20), transparent 52%), linear-gradient(135deg,var(--bg1),var(--bg2));
+      z-index: -2;
+      pointer-events: none;
+    }
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .floating-icon {
+      position: absolute;
+      font-size: 3rem;
+      opacity: 0.08;
+      animation: float linear infinite;
+      filter: drop-shadow(0 0 10px rgba(45,212,255,0.3));
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) translateX(0) rotate(0deg); }
+      100% { transform: translateY(-100vh) translateX(0) rotate(360deg); }
+    }
+    @keyframes sway {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      50% { transform: translateX(30px) rotate(5deg); }
+    }
+    .icon-1 { left: 5%; animation-duration: 8s; }
+    .icon-2 { left: 15%; animation-duration: 10s; animation-delay: 2s; }
+    .icon-3 { left: 25%; animation-duration: 12s; animation-delay: 1s; }
+    .icon-4 { left: 35%; animation-duration: 9s; animation-delay: 3s; }
+    .icon-5 { left: 45%; animation-duration: 11s; animation-delay: 1.5s; }
+    .icon-6 { left: 55%; animation-duration: 13s; animation-delay: 2.5s; }
+    .icon-7 { left: 65%; animation-duration: 10s; animation-delay: 0.5s; }
+    .icon-8 { left: 75%; animation-duration: 12s; animation-delay: 3.5s; }
+    .icon-9 { left: 85%; animation-duration: 9s; animation-delay: 2s; }
+    .icon-10 { left: 95%; animation-duration: 11s; animation-delay: 1s; }
+    
+    main { position: relative; z-index: 1; padding: 40px 0 70px; }
+    a{ color:inherit; text-decoration:none; }
+    .container{ width:min(1100px, 92vw); margin:0 auto; }
+    header{ position: sticky; top:0; z-index: 50; backdrop-filter: blur(10px); background: rgba(11,18,32,.7); border-bottom: 1px solid rgba(255,255,255,.08); }
+    .navbar{ display:flex; align-items:center; justify-content:space-between; padding: 14px 0; gap:12px; }
+    .brand{ display:flex; align-items:center; gap:12px; min-width: 220px; }
+    .brand img{ width:40px; height:40px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(255,255,255,.18); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+    .brand .name{ display:flex; flex-direction:column; line-height:1.1; }
+    .brand .name strong{ font-size: 14px; letter-spacing:.6px; text-transform: uppercase; }
+    .brand .name span{ font-size: 12px; color: var(--muted); }
+    .navlinks{ display:flex; gap:14px; align-items:center; flex-wrap: wrap; justify-content:flex-end; }
+    .navlinks a{ font-size: 13px; color: var(--muted); padding: 10px 12px; border-radius: 12px; border: 1px solid transparent; transition: .2s ease; cursor: pointer; }
+    .navlinks a:hover{ color: var(--text); border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.04); }
+    .mobile-toggle{ display:none; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); color: var(--text); border-radius: 12px; padding: 10px 12px; cursor:pointer; }
+    .hero{ display:grid; grid-template-columns: 1.25fr .75fr; gap: 24px; align-items: start; }
+    .hero-card{ padding: 28px; border-radius: var(--radius); background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow); position: relative; overflow:hidden; }
+    .hero-card::before{ content:""; position:absolute; inset:-2px; background: radial-gradient(600px 220px at 20% 0%, rgba(45,212,255,.35), transparent 60%), radial-gradient(520px 200px at 90% 20%, rgba(167,139,250,.28), transparent 55%); opacity: .55; pointer-events:none; }
+    .hero-card > *{ position:relative; z-index:1; }
+    .kicker{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; color: var(--muted); font-size: 13px; letter-spacing:.3px; }
+    .kicker .dot{ width:10px; height:10px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow: 0 0 0 6px rgba(45,212,255,.12); }
+    .hero h1{ margin: 14px 0 10px; font-size: clamp(28px, 4.2vw, 44px); letter-spacing: -0.02em; }
+    .sub{ margin: 0 0 18px; color: var(--muted); font-size: 16px; line-height:1.6; }
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; margin: 18px 0 22px; }
+    .chips .chip{ font-size: 12px; color: var(--text); padding: 9px 11px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.05); transition: .2s ease; }
+    .chips .chip:hover{ transform: translateY(-1px); border-color: rgba(45,212,255,.35); }
+    .cta-row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top: 8px; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; padding: 12px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.05); color: var(--text); font-weight: 650; font-size: 14px; transition: .2s ease; cursor: pointer; }
+    .btn:hover{ transform: translateY(-2px); border-color: rgba(45,212,255,.40); }
+    .btn.primary{ border-color: rgba(45,212,255,.45); background: linear-gradient(135deg, rgba(45,212,255,.18), rgba(167,139,250,.15)); }
+    .side-card{ padding: 18px; border-radius: var(--radius); background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); }
+    .side-card h3{ margin: 0 0 10px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+    .side-list{ margin:0; padding-left: 18px; color: var(--text); }
+    .side-list li{ margin: 10px 0; color: var(--muted); line-height:1.5; font-size: 14px; }
+    .section{ margin-top: 24px; }
+    .section h2{ font-size: 18px; margin: 0 0 12px; }
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+    .card{ grid-column: span 4; padding: 16px; border-radius: var(--radius); background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); min-height: 120px; }
+    .card h4{ margin: 4px 0 8px; font-size: 14px; }
+    .card p{ margin:0; color: var(--muted); line-height:1.6; font-size: 13px; }
+    .why{ margin-top: 16px; display:flex; flex-wrap:wrap; gap: 12px; }
+    .why .pill{ flex: 1 1 180px; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.12); }
+    .why .pill strong{ display:block; margin-bottom:6px; font-size:14px; }
+    .why .pill span{ color: var(--muted); font-size:13px; line-height:1.5; }
+    footer{ padding: 22px 0 40px; border-top: 1px solid rgba(255,255,255,.08); background: rgba(11,18,32,.35); position: relative; z-index: 10; }
+    .footer-inner{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center; color: var(--muted); font-size: 13px; }
+    .footer-inner .links{ display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-inner .links a{ color: var(--muted); border-bottom: 1px solid rgba(255,255,255,.12); }
+    .form{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+    .field{ grid-column: span 6; }
+    .field.full{ grid-column: span 12; }
+    label{ display:block; color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+    input, select, textarea{ width:100%; padding: 12px 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.04); color: var(--text); outline:none; font-size: 14px; }
+    textarea{ min-height: 120px; resize: vertical; }
+    input:focus, select:focus, textarea:focus{ border-color: rgba(45,212,255,.45); box-shadow: 0 0 0 4px rgba(45,212,255,.12); }
+    .gallery{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+    .gitem{ grid-column: span 3; border-radius: 16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); }
+    .gitem img{ width:100%; height: 170px; object-fit: cover; display:block; }
+    .gmeta{ padding: 10px 12px; color: var(--muted); font-size: 12px; }
+    .badge{ display:inline-flex; align-items:center; gap:8px; padding: 8px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.05); color: var(--text); font-size: 12px; margin-top: 10px; }
+    @keyframes gradientShift { 0%{ filter: hue-rotate(0deg); } 50%{ filter: hue-rotate(18deg); } 100%{ filter: hue-rotate(0deg); } }
+    .accent-anim{ animation: gradientShift 6.5s ease-in-out infinite; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+    @media (max-width: 980px){ .hero{ grid-template-columns: 1fr; } .card{ grid-column: span 6; } .gitem{ grid-column: span 4; } }
+    @media (max-width: 640px){ .mobile-toggle{ display:block; } .navlinks{ display:none; width:100%; } .navlinks.show{ display:flex; } .card{ grid-column: span 12; } .field{ grid-column: span 12; } .gitem{ grid-column: span 6; } }
+  </style>
+</head>
+<body>
+<div class="bg-animation" id="bgAnimation"></div>
+
+<header>
+  <div class="container">
+    <div class="navbar">
+      <a class="brand" href="#" onclick="navigateTo('home'); return false;">
+        <img class="accent-anim" src="https://raw.githubusercontent.com/Djzeks/distortion/main/08d8d607-d66f-4359-9bd5-23ffc3d830b8.png" alt="Logo">
+        <div class="name"><strong>DISTORTION ENTERTAINMENT</strong><span>HOME OF GRAPHIC DESIGN</span></div>
+      </a>
+      <button id="mobileToggle" class="mobile-toggle">Menu</button>
+      <nav id="navLinks" class="navlinks">
+        <a onclick="navigateTo('home'); return false;">Home</a>
+        <a onclick="navigateTo('services'); return false;">Services</a>
+        <a onclick="navigateTo('about'); return false;">About</a>
+        <a onclick="navigateTo('portfolio'); return false;">Portfolio</a>
+        <a onclick="navigateTo('contact'); return false;">Contact</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="home" class="page-section active">
+    <div class="container">
+      <section class="hero">
+        <div class="hero-card">
+          <div class="kicker"><span class="dot"></span><span class="accent-anim">Making Ordinary Extra Ordinary</span></div>
+          <h1>We don't just design your future, we defend it.</h1>
+          <p class="sub">Distortion Entertainment is a creative and digital solutions brand dedicated to helping individuals, businesses, organizations, and events stand out through creativity, technology, entertainment, and professional digital services.</p>
+          <div class="chips">
+            <span class="chip">Graphic Design</span><span class="chip">Branding</span><span class="chip">Web Development</span><span class="chip">DJ Services</span><span class="chip">Photography</span><span class="chip">Videography</span><span class="chip">Cybersecurity</span><span class="chip">Digital Marketing</span><span class="chip">Printing</span><span class="chip">Motion Graphics</span><span class="chip">Content Creation</span><span class="chip">Digital Solutions</span><span class="chip">Event Entertainment</span>
+          </div>
+          <div class="cta-row">
+            <a class="btn primary" onclick="navigateTo('contact'); return false;">Book a Service</a>
+            <a class="btn" onclick="navigateTo('contact'); return false;">Request a Quote</a>
+          </div>
+        </div>
+        <aside class="side-card">
+          <h3>Why clients choose us</h3>
+          <ul class="side-list">
+            <li><b>Creativity:</b> We turn ideas into powerful visual experiences.</li>
+            <li><b>Professionalism:</b> Attention to detail and quality delivery.</li>
+            <li><b>Innovation:</b> Modern solutions combining creativity + technology.</li>
+            <li><b>Custom Solutions:</b> Tailored for every client.</li>
+          </ul>
+          <div class="badge"><span class="dot"></span>One Creative Home</div>
+        </aside>
+      </section>
+      <section class="section">
+        <h2>Featured Services</h2>
+        <div class="grid">
+          <div class="card"><h4>Graphic Design</h4><p>Logos, flyers, posters, brochures, invitations, social media graphics, and more.</p></div>
+          <div class="card"><h4>Branding & Web</h4><p>Brand identity, responsive websites, landing pages, booking systems, and SEO basics.</p></div>
+          <div class="card"><h4>Entertainment & Media</h4><p>DJ services, event photography, videography, promotional content, and motion graphics.</p></div>
+          <div class="card"><h4>Cybersecurity</h4><p>Security assessments, audits, vulnerability testing, and hardening guidance (authorized scope).</p></div>
+          <div class="card"><h4>Marketing & Printing</h4><p>Social media design, campaign support, and print-ready artwork for marketing materials.</p></div>
+          <div class="card"><h4>Digital Solutions</h4><p>Client portals, dashboards, payments, automated responses, forms, and business systems.</p></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="services" class="page-section">
+    <div class="container">
+      <div class="hero-card" style="margin-bottom:18px;">
+        <div class="kicker"><span class="dot"></span><span class="accent-anim">Services</span></div>
+        <h1 style="margin-top:14px;">Everything you need—under one Creative Home.</h1>
+        <p class="sub">We combine creative design, entertainment, photography, digital solutions, web development, and cybersecurity to deliver services tailored to your needs.</p>
+        <div class="cta-row">
+          <a class="btn primary" onclick="navigateTo('contact'); return false;">Book a Service</a>
+          <a class="btn" onclick="navigateTo('portfolio'); return false;">View Portfolio</a>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card"><h4>Graphic Design</h4><p>Logos, business cards, flyers, posters, brochures, invitations, social media graphics, and more.</p></div>
+        <div class="card"><h4>Branding & Brand Identity</h4><p>Brand identity development, brand color & typography selection, guidelines, corporate packages, and rebranding.</p></div>
+        <div class="card"><h4>Web Design & Development</h4><p>Responsive websites, landing pages, e-commerce, booking websites, portals, payment integration, and updates.</p></div>
+        <div class="card"><h4>DJ Services & Entertainment</h4><p>Weddings, birthdays, corporate functions, events, MC hosting, crowd entertainment, and sound coordination.</p></div>
+        <div class="card"><h4>Photography Services</h4><p>Event, wedding, corporate, portrait, product, lifestyle, outdoor, and promotional photography.</p></div>
+        <div class="card"><h4>Videography & Video Production</h4><p>Event videography, promotional videos, editing, cinematic production, intros/outros, and motion graphics.</p></div>
+        <div class="card"><h4>Cybersecurity Services</h4><p>Security assessments, audits, vulnerability testing, security configuration reviews, and monitoring (authorized scope).</p></div>
+        <div class="card"><h4>Digital Marketing & Social Media Design</h4><p>Content creation, campaigns, advertising creatives, content planning, and online brand promotion.</p></div>
+        <div class="card"><h4>Printing & Promotional Design</h4><p>Print-ready design support for business cards, flyers, posters, banners, stickers, menus, certificates, and more.</p></div>
+        <div class="card"><h4>Motion Graphics & Animation</h4><p>Logo animations, social media animations, text animation, animated intros/outros, and event screen visuals.</p></div>
+        <div class="card"><h4>Content Creation</h4><p>Short videos, promotional content, YouTube/TikTok content, brand storytelling, educational and entertainment content.</p></div>
+        <div class="card"><h4>Business & Digital Solutions</h4><p>Booking systems, client management portals, dashboards, communication tools, automated responses, forms.</p></div>
+        <div class="card"><h4>Event & Entertainment Solutions</h4><p>DJ + event music, event branding, event posters, photography/videography support, invitations, and coordination.</p></div>
+        <div class="card"><h4>Personal & Business Digital Services</h4><p>Personal branding, professional profiles, digital CVs, portfolio websites, social media branding, presentations.</p></div>
+        <div class="card"><h4>Book Your Project</h4><p>Tell us what you need—then we'll recommend the best service package and deliver your results.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="about" class="page-section">
+    <div class="container">
+      <div class="hero-card">
+        <div class="kicker"><span class="dot"></span><span class="accent-anim">About Distortion Entertainment</span></div>
+        <h1 style="margin-top:14px;">Making Ordinary Extra Ordinary.</h1>
+        <p class="sub">Distortion Entertainment is a creative and digital solutions brand dedicated to helping individuals, businesses, organizations, and events stand out through creativity, technology, entertainment, and professional digital services.</p>
+        <div class="why">
+          <div class="pill"><strong>Creativity</strong><span>We turn ideas into powerful visual experiences.</span></div>
+          <div class="pill"><strong>Professionalism</strong><span>We approach every project with attention to detail and commitment to quality.</span></div>
+          <div class="pill"><strong>Innovation</strong><span>We combine creativity and technology to build modern, effective solutions.</span></div>
+          <div class="pill"><strong>Custom Solutions</strong><span>Every client is different—so we tailor service delivery to your needs.</span></div>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:18px;">
+        <div class="card"><h4>Our Mission</h4><p>To empower individuals, businesses, brands, and organizations through creativity, technology, entertainment, and secure digital solutions.</p></div>
+        <div class="card"><h4>Our Vision</h4><p>To become a leading creative and digital solutions brand known for innovation, professionalism, quality, and exceptional customer experiences.</p></div>
+        <div class="card"><h4>Our Tagline</h4><p>We don't just design your future, we defend it.</p></div>
+      </div>
+      <div class="cta-row" style="margin-top:18px;">
+        <a class="btn primary" onclick="navigateTo('contact'); return false;">Book a Service</a>
+        <a class="btn" onclick="navigateTo('portfolio'); return false;">See Our Work</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="portfolio" class="page-section">
+    <div class="container">
+      <div class="hero-card">
+        <div class="kicker"><span class="dot"></span><span class="accent-anim">Portfolio</span></div>
+        <h1 style="margin-top:14px;">Selected Work & Creative Samples</h1>
+        <p class="sub">A preview of graphics, web visuals, photography highlights, and media production moments.</p>
+        <div class="cta-row">
+          <a class="btn primary" onclick="navigateTo('contact'); return false;">Request a Quote</a>
+          <a class="btn" onclick="navigateTo('services'); return false;">See Services</a>
+        </div>
+      </div>
+      <div class="section">
+        <h2 style="margin-bottom:12px;">Gallery</h2>
+        <div class="gallery">
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/01d6170f-342b-465e-8b2f-2aeb05844c6a.png.webp" alt="Portfolio"><div class="gmeta">Branding / Design</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/191a117f-1e36-46c4-b550-8acc2e49d379.png" alt="Portfolio"><div class="gmeta">Creative Artwork</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/17f794f9-6a4f-43d2-98d2-1f5d0f7051f3.png" alt="Portfolio"><div class="gmeta">Graphic Design</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/18d68553-21f3-4823-a3a9-45f1f75482fb.png" alt="Portfolio"><div class="gmeta">Promotional Design</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/1f664b80-9206-40d6-b2b4-44bedfb419d8.png.webp" alt="Portfolio"><div class="gmeta">Web / Media</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/20f51ae0-30f8-4100-8dff-c70b2dd5bdb1.png.webp" alt="Portfolio"><div class="gmeta">Event / Flyer</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/263c107c-a65f-4cfa-859e-a6f849f68270.png" alt="Portfolio"><div class="gmeta">Brand Sample</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/2f5536da-1daf-47b5-99f3-41f8019a8bf7.png" alt="Portfolio"><div class="gmeta">Poster / Banner</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/301588b9-aaa2-476e-8f59-211ff812c108.png.webp" alt="Portfolio"><div class="gmeta">Motion / Promo</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/3170d023-ca53-425e-abba-eb2a643d2f25.png.webp" alt="Portfolio"><div class="gmeta">Social Graphics</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/31eba134-f9d7-48a4-8892-ef28681e572d.png" alt="Portfolio"><div class="gmeta">Digital Artwork</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/42902b63-b62a-4811-b4e3-7e00167589ae.png" alt="Portfolio"><div class="gmeta">Brand Identity</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/IMG-20260605-WA0002.jpg" alt="Portfolio"><div class="gmeta">Photography</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/IMG-20260605-WA0003.jpg" alt="Portfolio"><div class="gmeta">Event Capture</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/IMG-20260605-WA0004.jpg" alt="Portfolio"><div class="gmeta">Event Capture</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/IMG-20260618-WA0007.jpg" alt="Portfolio"><div class="gmeta">Wedding / Event</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/IMG-20260618-WA0010.jpg" alt="Portfolio"><div class="gmeta">Photography</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/Jun%203%2C%202026%2C%2001_30_14%20PM.png" alt="Portfolio"><div class="gmeta">Media Visual</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/a58c6c6f-d411-4581-bc60-10b3dbaee241.png.webp" alt="Portfolio"><div class="gmeta">Design / Promo</div></div>
+          <div class="gitem"><img src="https://raw.githubusercontent.com/Djzeks/distortion/main/ac0c8955-6c36-4683-a2b4-0c5aa20644bb.png" alt="Portfolio"><div class="gmeta">Branding</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="contact" class="page-section">
+    <div class="container">
+      <div class="hero-card">
+        <div class="kicker"><span class="dot"></span><span class="accent-anim">Book a Service</span></div>
+        <h1 style="margin-top:14px;">Let's turn your ideas into reality.</h1>
+        <p class="sub">Send your details and we'll reply with next steps and a quote.</p>
+        <div style="margin-top:10px; color:var(--muted); font-size:13px; line-height:1.8;">
+          <b style="color:var(--text);">Call/WhatsApp:</b> 0742438180<br>
+          <b style="color:var(--text);">Email:</b> distortionentertainment1@gmail.com<br>
+          <b style="color:var(--text);">Location:</b> Nairobi
+        </div>
+      </div>
+      <div class="section">
+        <h2>Request a Quote</h2>
+        <form class="form" onsubmit="return false;">
+          <div class="field"><label>Full Name</label><input id="name" type="text" placeholder="Your name" required></div>
+          <div class="field"><label>Phone / WhatsApp</label><input id="phone" type="tel" placeholder="07xxxxxxxx" required></div>
+          <div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com"></div>
+          <div class="field"><label>Service</label><select id="service" required><option disabled selected>Select a service</option><option>Graphic Design</option><option>Branding & Brand Identity</option><option>Web Design & Development</option><option>DJ Services & Entertainment</option><option>Photography</option><option>Videography & Video Production</option><option>Cybersecurity</option><option>Digital Marketing</option><option>Printing & Design</option><option>Motion Graphics</option><option>Content Creation</option><option>Digital Solutions</option><option>Event Solutions</option><option>Personal Branding</option></select></div>
+          <div class="field full"><label>Project Summary</label><textarea id="summary" placeholder="What do you need?" required></textarea></div>
+          <div class="field full"><label>Contact Method</label><select id="method" required><option>WhatsApp</option><option>Email</option></select></div>
+          <div class="field full">
+            <button class="btn primary" onclick="sendToWhatsApp()">Submit (WhatsApp)</button>
+            <button class="btn" onclick="sendToEmail()" style="margin-left:10px;">Submit (Email)</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div><div style="color:var(--text); font-weight:700;">Let's turn your ideas into reality.</div><div>0742438180 • distortionentertainment1@gmail.com • Nairobi</div></div>
+    <div class="links">
+      <a onclick="navigateTo('contact'); return false;">Book a Service</a>
+      <a href="https://djzeks.github.io/distortion" target="_blank">Website</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const toggle = document.getElementById('mobileToggle');
+const nav = document.getElementById('navLinks');
+toggle.addEventListener('click', () => nav.classList.toggle('show'));
+
+// Create animated background icons
+const icons = ['✏️', '🎨', '🖌️', '🛡️', '🔒', '💻', '🎯', '📊', '🌐', '⚙️'];
+const bgAnimation = document.getElementById('bgAnimation');
+
+for(let i = 0; i < 10; i++) {
+  const icon = document.createElement('div');
+  icon.className = `floating-icon icon-${i+1}`;
+  icon.textContent = icons[i];
+  bgAnimation.appendChild(icon);
+}
+
+function navigateTo(page) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+  nav.classList.remove('show');
+  window.scrollTo(0, 0);
+}
+
+function getVal(id) { return (document.getElementById(id).value || '').trim(); }
+
+function buildMessage() {
+  return `Hello Distortion Entertainment 👋\n\nName: ${getVal('name')}\nPhone: ${getVal('phone')}\nEmail: ${getVal('email') || 'N/A'}\nService: ${getVal('service')}\n\nProject:\n${getVal('summary')}`;
+}
+
+function sendToWhatsApp() {
+  const msg = encodeURIComponent(buildMessage());
+  const num = "0742438180".replace(/^0/, "254");
+  window.open(`https://wa.me/${num}?text=${msg}`, "_blank");
+}
+
+function sendToEmail() {
+  const subj = encodeURIComponent("Request a Quote - Distortion Entertainment");
+  const body = encodeURIComponent(buildMessage());
+  window.location.href = `mailto:distortionentertainment1@gmail.com?subject=${subj}&body=${body}`;
+}
+</script>
+</body>
+</html>
